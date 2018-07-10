@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>learnVue</title>
+    <script type="text/javascript" src="../assets/js/Vue.js"></script>
+</head>
+<body>
+    <h2>>>>>>>>>>>></h2>
+    <hr />
+    <div id="app">
+        <p>计算后的数值${newPrice}</p>
+        <p>data里的数值${price}</p>
+        <button @click="changePrice" >add</button>
+        <span>外部调用构造器内部的方法</span>
+        <add @click.native="changePrice"></add>
+    </div>
+    <p> <button onclick="jianfa()">减法</button></p>
+    <script type="text/javascript">
+        var add = {
+            template:'<button>外部add</button>'
+        }
+        var mixins = {
+            updated() {
+                console.log('混入，需在构造器内部引用')
+            },
+        }
+        Vue.mixin({ 
+            updated() {
+                console.log('全局混入')
+            }
+        })
+        var extendsobj = {
+            updated() {
+                console.log('我是拓展的钩子函数')
+            },
+            reset() {
+                console.log('我是拓展的方法')
+            }
+        }
+        var vue = new Vue({
+            el:'#app',
+            data:{
+                price:100
+            },
+            mixins:[
+                mixins
+            ],
+            components:{
+                'add':add
+            },
+            updated (){
+                console.log('生命周期钩子，当数据发生变化时执行')
+            },
+            destroyed() {
+                console.log('销毁后')
+            },
+            //监控
+            watch:{
+                //监控什么就写什么；外部监控构造器内的属性:$watch(要监控的属性,fn(new,old));
+                price:function(newvalue,oldvalue){
+                    if(newvalue>105){
+                        this.price = 100
+                    }
+                }
+            },
+            //计算数据时使用的选项，为了不污染数据源
+            computed:{
+                newPrice:function(){
+                    return '$'+ this.price
+                }
+            },
+            //方法
+            methods:{
+                // 参数:$event 原生event事件
+                changePrice:function(){
+                    this.price++;
+                }
+            },
+            //拓展
+            extends:extendsobj,
+            //修改插值的写法
+            delimiters:['${','}']
+        })
+        // vue.$destroyed() 销毁
+        // vue.$forceUpdate() 刷新
+        // vue.$nextTick() 当数据被修改 类似构造器内的updated 钩子函数
+        // 外部修改构造器内部的数据：vue.price=修改后的值
+        // 外部调用方法修改构造器内部的数据：vue.on
+        // vue.$once() 只调用一次
+        // vue.$off('事件') 关闭事件 
+        /********************************************************************/
+        // slot必须成对出现 在传递数据的时候加一个中间层，控制是否传递，以及传递哪些数据。
+        // <fu><span slot = "name">{{值}}</span></fu>
+        // <zi><slot name = "name"></slot></zi>
+        // 路由:单页应用的路径管理器（spa）
+        vue.$on("jianfa",function() {
+            this.price--;
+        })
+        function jianfa(){
+            // $emit 多用于父组件内部的方法，在子组件触发（执行触发的方法调用的地方还是父组件）
+            // 在组件外部也是可以使用
+            vue.$emit('jianfa')
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>learnVue 全局组件</title>
+    <script type="text/javascript" src="../assets/js/Vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <yihao :here="here"></yihao>
+    </div>
+    <script type="text/javascript">
+        var app = new Vue({
+            el:'#app',
+            data:{
+                here:'平谷'
+            },
+            //局部组件注册
+            components:{
+                "yihao":{
+                    template:`<div style="width:50px;heigiht:50px;background:green;color:black">
+                    我来自{{ here }}
+                    </div>` ,
+                    props:[
+                        'here'
+                    ]
+                }
+            }
+        })    
+    </script>
+</body>
+</html>

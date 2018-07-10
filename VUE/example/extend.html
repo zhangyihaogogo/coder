@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>learnVue extend</title>
+    <script type="text/javascript" src="../assets/js/Vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <header></header>
+    </div>
+    <script type="text/javascript">
+    // vur 拓展；
+        var header_a = Vue.extend({
+            template:'<div> i am extend {{ msg }} - {{ a }} </div>',
+            data:function(){
+                return {
+                    msg: ' cheacas ksmd '
+                }
+            },
+            props:['a']
+        })
+        // 挂载
+        new header_a({propsData:{a:1}}).$mount('header');
+    </script>
+</body>
+</html>

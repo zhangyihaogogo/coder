@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>learnVue computed</title>
+    <script type="text/javascript" src="../assets/js/Vue.js"></script>
+</head>
+<body>
+    <h2>计算选项</h2>
+    <hr />
+    <div id="app">
+        <p>计算后的数值{{newPrice}}</p>
+        <p>data里的数值{{price}}</p>
+    </div>
+    <script type="text/javascript">
+        var vue = new Vue({
+            el:'#app',
+            data:{
+                price:100
+            },
+            //计算数据时使用的选项，为了不污染数据源
+            computed:{
+                newPrice:function(){
+                    return '$'+ this.price
+                }
+            }
+        })
+    </script>
+</body>
+</html>

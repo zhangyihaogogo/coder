@@ -20,7 +20,13 @@
         <el-row>
             <el-button round @click="btnclick" >嘿</el-button>
         </el-row>
-        <ve-pie :data="chartData"></ve-pie>
+
+        <div class="checklist">
+            <div v-for="(item, index) in lists" :class="{'active': chenckclass[index],'litt':true}" @click="checks(item,index)" @mouseover="checkenter(index)" :key="index">
+                <input type="checkbox" :value="item" v-model="datalists">
+                <span>{{item}}</span>
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -34,17 +40,9 @@ export default {
     data(){
         return{
             msg:'Hello Vuex',
-            chartData: {
-                columns: ['日期', '访问用户'],
-                rows: [
-                    { '日期': '1/1', '访问用户': 1393 },
-                    { '日期': '1/2', '访问用户': 3530 },
-                    { '日期': '1/3', '访问用户': 2923 },
-                    { '日期': '1/4', '访问用户': 1723 },
-                    { '日期': '1/5', '访问用户': 3792 },
-                    { '日期': '1/6', '访问用户': 4593 }
-                ]
-            }
+            datalists:[],
+            onoff:true,
+            start:-1
         }
     },
     beforeMount(){
@@ -63,6 +61,30 @@ export default {
     // 方法3:
     computed:{
         ...mapState(['count']),
+        lists: function(){
+            let arr = []
+            for (let index = 0; index < 99; index++) {
+                if(index<9){
+                    arr.push(
+                       
+                        '0'+(index+1)
+                       
+                    )
+                }else{
+                    arr.push(
+                       ''+(index+1)
+                    )
+                }
+            }
+            return arr
+        },
+        chenckclass(){
+            let arr = []
+            for (let index = 0; index < 99; index++) {
+                arr.push(false)
+            }
+            return arr
+        }
         // count(){
         //     return this.$store.getters.count;
         // }
@@ -74,6 +96,55 @@ export default {
         ...mapActions(['addAction','reduceAction']),
         btnclick(){
             this.reduceAction();
+        },
+        checks(itm,index){
+            let arr = []
+            if(this.datalists.includes(itm)){
+                this.datalists.splice(this.datalists.findIndex(e=>e===itm),1)
+                this.start = -1;
+            }else{
+                this.datalists.push(itm);
+                if(this.start === -1){
+                    this.start = index;
+                }else{
+                    arr = this.lists.filter((e,i)=>{
+                        if(this.start<index){
+                            if(this.start < i && i< index){
+                                return e
+                            }
+                        }else{
+                            if(index < i && i< this.start){
+                                return e
+                            }
+                        }
+                    })
+                    this.start = -1;
+                }
+            }
+            this.datalists = [...new Set(this.datalists.concat(arr))]
+            console.log(this.datalists)
+        },
+        checkenter(index){
+            if(this.start === -1){
+                return
+            }
+            let num = index - this.start;
+            num > 0 ? num = num : num = num * -1;
+            this.chenckclass.forEach(e => e = false)
+            for (let i = 0; i <= num; i++) {
+                if(this.start < index){
+                    // this.chenckclass[this.start+i] = true;
+                    this.$set(this.chenckclass, this.start+i, true)
+                }else{
+                    this.$set(this.chenckclass, this.start-i, true)
+                    // this.chenckclass[this.start-i] = true;
+                }
+            }
+            console.log(this.chenckclass)
+            this.chenckclass = this.chenckclass.map(e=>e)
+        },
+        checkleave(index){
+
         }
     },
     store
@@ -81,6 +152,17 @@ export default {
 </script>
 <style>
     .bg-purple-dark{
+        background: red;
+    }
+    .checklist{
+        max-width: 250px;
+        border: 1px solid black;
+    }
+    .litt{
+        display: inline-block;
+        padding: 3px;
+    }
+    .active{
         background: red;
     }
 </style>

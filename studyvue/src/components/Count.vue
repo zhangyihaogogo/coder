@@ -22,9 +22,9 @@
         </el-row>
 
         <div class="checklist">
-            <div v-for="(item, index) in lists" :class="{'active': chenckclass[index],'litt':true}" @click="checks(item,index)" @mouseover="checkenter(index)" :key="index">
-                <input type="checkbox" :value="item" v-model="datalists">
-                <span>{{item}}</span>
+            <div v-for="(item, index) in lists" :class="item.name" @click="checks(item,index)" @mouseenter="checkenter(index)" :key="index">
+                <input type="checkbox" :value="item.value" v-model="datalists">
+                <span>{{item.value}}</span>
             </div>
         </div>
     </div>
@@ -65,14 +65,18 @@ export default {
             let arr = []
             for (let index = 0; index < 99; index++) {
                 if(index<9){
-                    arr.push(
-                       
-                        '0'+(index+1)
-                       
+                    arr.push( 
+                        {
+                            value: '0'+(index+1),
+                            name: 'litt'
+                        }
                     )
                 }else{
                     arr.push(
-                       ''+(index+1)
+                        {
+                            value: ''+(index+1),
+                            name: 'litt'
+                        }
                     )
                 }
             }
@@ -99,49 +103,50 @@ export default {
         },
         checks(itm,index){
             let arr = []
-            if(this.datalists.includes(itm)){
-                this.datalists.splice(this.datalists.findIndex(e=>e===itm),1)
-                this.start = -1;
+            if(this.datalists.some(e => e === itm.value)){
+                this.datalists.splice(this.datalists.findIndex(e => e === itm.value),1)
+                
             }else{
-                this.datalists.push(itm);
+               
                 if(this.start === -1){
                     this.start = index;
                 }else{
-                    arr = this.lists.filter((e,i)=>{
+                    arr = this.lists.map((e,i)=>{
                         if(this.start<index){
                             if(this.start < i && i< index){
-                                return e
+                                return e.value
                             }
                         }else{
                             if(index < i && i< this.start){
-                                return e
+                                return e.value
                             }
                         }
                     })
                     this.start = -1;
                 }
             }
+            // console.log("arr",arr)
             this.datalists = [...new Set(this.datalists.concat(arr))]
-            console.log(this.datalists)
+           
         },
         checkenter(index){
-            if(this.start === -1){
-                return
-            }
-            let num = index - this.start;
-            num > 0 ? num = num : num = num * -1;
-            this.chenckclass.forEach(e => e = false)
-            for (let i = 0; i <= num; i++) {
-                if(this.start < index){
-                    // this.chenckclass[this.start+i] = true;
-                    this.$set(this.chenckclass, this.start+i, true)
-                }else{
-                    this.$set(this.chenckclass, this.start-i, true)
-                    // this.chenckclass[this.start-i] = true;
-                }
-            }
-            console.log(this.chenckclass)
-            this.chenckclass = this.chenckclass.map(e=>e)
+            // if(this.start === -1){
+            //     return
+            // }
+            // let num = index - this.start;
+            // num > 0 ? num = num : num = num * -1;
+            // this.chenckclass.forEach(e => e = false)
+            // for (let i = 0; i <= num; i++) {
+            //     if(this.start < index){
+            //         // this.chenckclass[this.start+i] = true;
+            //         this.$set(this.chenckclass, this.start+i, true)
+            //     }else{
+            //         this.$set(this.chenckclass, this.start-i, true)
+            //         // this.chenckclass[this.start-i] = true;
+            //     }
+            // }
+            // console.log(this.chenckclass)
+            // this.chenckclass = this.chenckclass.map(e=>e)
         },
         checkleave(index){
 

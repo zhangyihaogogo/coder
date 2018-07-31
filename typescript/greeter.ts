@@ -351,7 +351,7 @@ console.log(howard.name);
  */
 
  //构造函数也可以被标记成 protrcted . 这意味着这个类不能包含它的类外被实例化，但是能被继承。
-
+/* 
 class Person {
     protected name: string;
     protected constructor(theName: string) {
@@ -359,7 +359,81 @@ class Person {
     }
 }
 
-class Employee extends Personm {
+class Employee extends Person {
     private department: string;
-    constructor
+    constructor(name: string, department: string) {
+        super(name);
+        this.department = department;
+    }
+
+    public getElevatorPitch() {
+        return `Hello, my name is ${this.name} and I work in ${this.department}.`;
+    }
 } 
+let howard = new Employee("howard", "Sales");
+console.log(howard.getElevatorPitch())
+// let john = new Person("John");  Person d的构造函数被保护，不能被实例化；
+ */
+
+ //readonly  只读属性必须在声明时或构造函数里被初始化。
+
+// class Octopus {
+//     readonly name: string;
+//     readonly numberOfLegs: number = 8;
+//     constructor (theName: string) {
+//         this.name = theName;
+//     }
+// }
+// let add = new Octopus("Man with the 8 strong legs");
+// add.name = 's'// name 是只读的
+
+
+// 参数属性
+/* 
+参数属性通过给构造函数参数添加一个访问限定符来声明。 
+使用 private限定一个参数属性会声明并初始化一个私有成员；对于 public和 protected来说也是一样。
+public:public指定成员是可见的;
+private:不能在声明他的类外部使用;
+protecte: 类似 pricate,但是protected成员在子类中可以访问；
+ */
+/* class Animal {
+    constructor(private name: string) {}
+    move(distanceInMeters: number) {
+        console.log(`${this.name} moved ${distanceInMeters}m.`);
+    }
+} */
+
+// 存取器
+// ：TypeScript支持通过getters/setters来截取对对象成员的访问
+/* class Employee {
+    fullName: string;
+}
+let employee = new Employee();
+employee.fullName = "Bob smith";
+if (employee.fullName) {
+    console.log(employee.fullName);
+}
+ */
+let passcode = "secret passcode";
+
+class Employee {
+    private _fullName: string;
+    
+    get fullName(): string {
+        return this._fullName;
+    }
+
+    set fullName(newName: string) {
+        if (passcode && passcode == "secret passcode") {
+            this._fullName = newName;
+        }else {
+            console.log("Error: Unauthorized update of employee!");
+        }
+    }
+}
+let employee = new Employee();
+employee.fullName = "Bob Smith";
+if (employee.fullName) {
+    alert(employee.fullName);
+}
+

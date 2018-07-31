@@ -4,16 +4,6 @@
 //         this.fullName = firstName + ' ' + middleInitial + ' ' + lastName;
 //     }
 // }
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 // interface Person {
 //     firstName: string;
 //     lastName: string;
@@ -270,7 +260,7 @@ let tom : Animal = new Horse("Tommy the Palomino");
 
 // sam.move();
 tom.move(34); */
-// 私有成员定义
+// 私有成员定义private
 // class Animal {
 //     // 使用 public指定成员是可见的, 不写默认是public
 //     public name: string;
@@ -301,43 +291,112 @@ tom.move(34); */
 // let rhino = new Rhino();
 // let employee = new Employee("Bob");
 // animal = rhino;
-// class Person {
-//     protected name: string;
-//     constructor(name: string) {
-//         this.name = name;
-//     }
-// }
-// class Employee extends Person {
-//     private department: string;
-//     constructor(name: string, department: string) {
-//         super(name)
-//         this.department = department;
-//     }
-//     public getElevatorPitch() {
-//         return `hello, my namer is ${this.name} and I work in ${this.department}.`;
-//     }
-// }
-// let howard = new Employee("Howard","Sales");
-// console.log(howard.getElevatorPitch());
-// console.log(howard.name);
-var Person = /** @class */ (function () {
-    function Person(name) {
+//protected修饰符与 private修饰符的行为很相似，但有一点不同， protected成员在派生类中仍然可以访问
+/* class Person {
+    protected name: string;
+    constructor(name: string) {
         this.name = name;
     }
-    return Person;
-}());
-var Employee = /** @class */ (function (_super) {
-    __extends(Employee, _super);
-    function Employee(name, department) {
-        var _this = _super.call(this, name) || this;
-        _this.department = department;
-        return _this;
+}
+
+class Employee extends Person {
+    private department: string;
+    constructor(name: string, department: string) {
+        super(name)
+        this.department = department;
     }
-    Employee.prototype.getElevatorPitch = function () {
-        return "Hello, my name is " + this.name + " and I work in " + this.department + ".";
-    };
-    return Employee;
-}(Person));
-var howard = new Employee("Howard", "Sales");
+    public getElevatorPitch() {
+        return `hello, my namer is ${this.name} and I work in ${this.department}.`;
+    }
+}
+
+let howard = new Employee("Howard","Sales");
+
 console.log(howard.getElevatorPitch());
-// console.log(howard.name); // 错误
+console.log(howard.name);
+ */
+//构造函数也可以被标记成 protrcted . 这意味着这个类不能包含它的类外被实例化，但是能被继承。
+/*
+class Person {
+    protected name: string;
+    protected constructor(theName: string) {
+        this.name = theName;
+    }
+}
+
+class Employee extends Person {
+    private department: string;
+    constructor(name: string, department: string) {
+        super(name);
+        this.department = department;
+    }
+
+    public getElevatorPitch() {
+        return `Hello, my name is ${this.name} and I work in ${this.department}.`;
+    }
+}
+let howard = new Employee("howard", "Sales");
+console.log(howard.getElevatorPitch())
+// let john = new Person("John");  Person d的构造函数被保护，不能被实例化；
+ */
+//readonly  只读属性必须在声明时或构造函数里被初始化。
+// class Octopus {
+//     readonly name: string;
+//     readonly numberOfLegs: number = 8;
+//     constructor (theName: string) {
+//         this.name = theName;
+//     }
+// }
+// let add = new Octopus("Man with the 8 strong legs");
+// add.name = 's'// name 是只读的
+// 参数属性
+/*
+参数属性通过给构造函数参数添加一个访问限定符来声明。
+使用 private限定一个参数属性会声明并初始化一个私有成员；对于 public和 protected来说也是一样。
+public:public指定成员是可见的;
+private:不能在声明他的类外部使用;
+protecte: 类似 pricate,但是protected成员在子类中可以访问；
+ */
+/* class Animal {
+    constructor(private name: string) {}
+    move(distanceInMeters: number) {
+        console.log(`${this.name} moved ${distanceInMeters}m.`);
+    }
+} */
+// 存取器
+// ：TypeScript支持通过getters/setters来截取对对象成员的访问
+/* class Employee {
+    fullName: string;
+}
+let employee = new Employee();
+employee.fullName = "Bob smith";
+if (employee.fullName) {
+    console.log(employee.fullName);
+}
+ */
+var passcode = "secret passcode";
+var Employee = /** @class */ (function () {
+    function Employee() {
+    }
+    Object.defineProperty(Employee.prototype, "fullName", {
+        get: function () {
+            return this._fullName;
+        },
+        set: function (newName) {
+            if (passcode && passcode == "secret passcode") {
+                this._fullName = newName;
+            }
+            else {
+                console.log("Error: Unauthorized update of employee!");
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Employee;
+}());
+var employee = new Employee();
+employee.fullName = "Bob Smith";
+if (employee.fullName) {
+    alert(employee.fullName);
+}
